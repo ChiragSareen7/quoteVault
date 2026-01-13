@@ -135,7 +135,6 @@ Security was treated as a **first‑class concern**:
 * Strict Row Level Security (RLS) on all tables
 * User‑scoped database access enforced via policies
 * Protected routes using middleware
-* Defensive error handling throughout
 
 ---
 
@@ -175,8 +174,6 @@ Create a `.env.local` file:
 ```env
 NEXT_PUBLIC_SUPABASE_URL=your_supabase_project_url
 NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
-SUPABASE_SERVICE_ROLE_KEY=your_service_role_key
-NEXT_PUBLIC_APP_NAME=QuoteVault
 ```
 
 ### 4. Supabase Setup
@@ -239,13 +236,6 @@ The Loom walkthrough covers:
 
 ---
 
-## ⚠️ Known Limitations
-
-* Native widgets and push notifications are platform‑dependent
-* Web implementation documents these constraints clearly
-* Some advanced animations may vary across browsers
-
----
 
 ## 🏁 Final Notes
 
