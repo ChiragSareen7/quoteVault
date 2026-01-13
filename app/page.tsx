@@ -1,65 +1,200 @@
-import Image from "next/image";
+'use client';
 
-export default function Home() {
+
+
+import { useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import { getQuotes } from '@/lib/actions/quotes';
+import { QUERY_KEYS, QUOTE_CATEGORIES } from '@/lib/constants';
+import type { QuoteCategory } from '@/types/database';
+import { DailyQuote } from '@/components/daily-quote';
+import { QuoteCard } from '@/components/quote-card';
+import { CreateQuoteDialog } from '@/components/create-quote-dialog';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Search, Loader2, Filter, Plus } from 'lucide-react';
+import { Nav } from '@/components/nav';
+import { useAuth } from '@/lib/hooks/use-auth';
+
+export default function HomePage() {
+  const { isAuthenticated } = useAuth();
+  const [searchQuery, setSearchQuery] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState<QuoteCategory | 'all'>('all');
+  const [authorFilter, setAuthorFilter] = useState('');
+  const [page, setPage] = useState(1);
+  const [showCreateDialog, setShowCreateDialog] = useState(false);
+
+  const { data, isLoading, error, refetch } = useQuery({
+    queryKey: QUERY_KEYS.quotes.list({
+      page,
+      category: selectedCategory !== 'all' ? selectedCategory : undefined,
+      search: searchQuery || undefined,
+      author: authorFilter || undefined,
+    }),
+    queryFn: () =>
+      getQuotes({
+        page,
+        category: selectedCategory !== 'all' ? selectedCategory : undefined,
+        search: searchQuery || undefined,
+        author: authorFilter || undefined,
+      }),
+  });
+
+  const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setPage(1);
+    refetch();
+  };
+
+  const handleCategoryChange = (category: QuoteCategory | 'all') => {
+    setSelectedCategory(category);
+    setPage(1);
+  };
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+    <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20">
+      <Nav />
+      <main className="container mx-auto px-4 py-8">
+        <div className="space-y-8">
+          {/* Daily Quote Section */}
+          <DailyQuote />
+
+          {/* Quote Feed Section */}
+          <div className="space-y-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <h2 className="text-3xl font-bold bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text text-transparent">
+                  Explore Quotes
+                </h2>
+                <p className="text-muted-foreground mt-1">Discover wisdom, inspiration, and humor</p>
+              </div>
+              {isAuthenticated && (
+                <Button
+                  onClick={() => setShowCreateDialog(true)}
+                  size="lg"
+                  className="gap-2 shadow-lg hover:shadow-xl transition-all"
+                >
+                  <Plus className="h-5 w-5" />
+                  Create Quote
+                </Button>
+              )}
+            </div>
+
+            {/* Filters */}
+            <div className="space-y-4">
+              <form onSubmit={handleSearch} className="flex gap-3">
+                <div className="relative flex-1">
+                  <Search className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-muted-foreground" />
+                  <Input
+                    placeholder="Search quotes or authors..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="pl-11 h-12 text-base border-2 focus:border-primary transition-colors"
+                  />
+                </div>
+                <Button type="submit" size="lg" className="px-8">Search</Button>
+              </form>
+
+              <div className="flex flex-wrap items-center gap-4">
+                <div className="flex items-center gap-2">
+                  <Filter className="h-4 w-4 text-muted-foreground" />
+                  <span className="text-sm font-medium">Category:</span>
+                </div>
+                <Tabs
+                  value={selectedCategory}
+                  onValueChange={(value) =>
+                    handleCategoryChange(value as QuoteCategory | 'all')
+                  }
+                >
+                  <TabsList>
+                    <TabsTrigger value="all">All</TabsTrigger>
+                    {QUOTE_CATEGORIES.map((cat) => (
+                      <TabsTrigger key={cat.value} value={cat.value}>
+                        {cat.label}
+                      </TabsTrigger>
+                    ))}
+                  </TabsList>
+                </Tabs>
+              </div>
+            </div>
+
+            {/* Quote List */}
+            {isLoading && page === 1 ? (
+              <div className="flex items-center justify-center py-12">
+                <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+              </div>
+            ) : error || data?.error ? (
+              <div className="rounded-lg border border-destructive/50 bg-destructive/10 p-4 text-center text-destructive">
+                <p className="font-semibold mb-2">Failed to load quotes</p>
+                <p className="text-sm mb-4">{data?.error || error?.message || 'Please check your database setup'}</p>
+                {data?.error?.includes('Database not set up') && (
+                  <div className="mt-4 p-3 bg-muted rounded text-left text-sm">
+                    <p className="font-semibold mb-2">Setup Instructions:</p>
+                    <ol className="list-decimal list-inside space-y-1">
+                      <li>Go to your Supabase Dashboard</li>
+                      <li>Open SQL Editor</li>
+                      <li>Run the <code className="bg-background px-1 rounded">supabase/schema.sql</code> file</li>
+                      <li>Optionally run <code className="bg-background px-1 rounded">supabase/seed.sql</code> to add quotes</li>
+                    </ol>
+                  </div>
+                )}
+                <Button
+                  onClick={() => refetch()}
+                  variant="outline"
+                  className="mt-4"
+                >
+                  Retry
+                </Button>
+              </div>
+            ) : !data?.quotes || data.quotes.length === 0 ? (
+              <div className="rounded-lg border p-8 text-center text-muted-foreground">
+                <p>No quotes found. Try adjusting your filters.</p>
+              </div>
+            ) : (
+              <>
+                <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+                  {data.quotes.map((quote, index) => (
+                    <div
+                      key={quote.id}
+                      className="animate-fade-in"
+                      style={{ animationDelay: `${index * 50}ms` }}
+                    >
+                      <QuoteCard quote={quote} />
+                    </div>
+                  ))}
+                </div>
+
+                {/* Pagination */}
+                {data.hasMore && (
+                  <div className="flex justify-center pt-4">
+                    <Button
+                      onClick={() => setPage((p) => p + 1)}
+                      disabled={isLoading}
+                      variant="outline"
+                    >
+                      {isLoading ? (
+                        <>
+                          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                          Loading...
+                        </>
+                      ) : (
+                        'Load More'
+                      )}
+                    </Button>
+                  </div>
+                )}
+              </>
+            )}
+          </div>
         </div>
       </main>
+      {showCreateDialog && (
+        <CreateQuoteDialog
+          open={showCreateDialog}
+          onOpenChange={setShowCreateDialog}
+        />
+      )}
     </div>
   );
 }
