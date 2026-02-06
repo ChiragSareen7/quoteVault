@@ -1,4 +1,4 @@
-
+'use server';
 
 import { createServerSupabase } from '@/lib/supabase/server';
 import type { Quote, QuoteCategory } from '@/types/database';
@@ -165,7 +165,7 @@ export async function getQuoteOfDay() {
     }
 
     return data as Quote;
-  } catch (error) {
+  } catch {
     return null;
   }
 }

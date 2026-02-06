@@ -107,7 +107,7 @@ export function QuoteCard({ quote, onFavoriteChange }: QuoteCardProps) {
         <CardContent className="pt-6 relative z-10">
           <div className="space-y-4">
             <p className="text-xl leading-relaxed italic font-serif text-foreground/90 group-hover:text-foreground transition-colors">
-              "{quote.text}"
+              &quot;{quote.text}&quot;
             </p>
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">

@@ -1,3 +1,4 @@
+'use server';
 
 import { createServerSupabase } from '@/lib/supabase/server';
 import type { Favorite, Quote } from '@/types/database';

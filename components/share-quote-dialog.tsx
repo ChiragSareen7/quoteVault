@@ -36,7 +36,7 @@ export function ShareQuoteDialog({
           text: `"${quote.text}" - ${quote.author}`,
         });
         onOpenChange(false);
-      } catch (error) {
+      } catch {
         // User cancelled or error occurred
       }
     } else {

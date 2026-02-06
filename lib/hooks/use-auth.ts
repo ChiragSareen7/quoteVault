@@ -23,7 +23,7 @@ export function useAuth() {
   useEffect(() => {
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event: string, _session: unknown) => {
+    } = supabase.auth.onAuthStateChange(() => {
       // Invalidate and refetch user query when auth state changes
       queryClient.invalidateQueries({ queryKey: ['auth', 'user'] });
     });

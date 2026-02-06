@@ -1,3 +1,4 @@
+'use server';
 
 import { createServerSupabase } from '@/lib/supabase/server';
 import type { Collection, CollectionQuote, Quote } from '@/types/database';

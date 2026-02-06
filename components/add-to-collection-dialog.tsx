@@ -87,7 +87,7 @@ export function AddToCollectionDialog({
       // Only close if all succeeded
       onOpenChange(false);
       setSelectedCollections(new Set());
-    } catch (error) {
+    } catch {
       // Error is already handled by mutation onError
       // Don't close dialog so user can retry
     }
@@ -111,7 +111,7 @@ export function AddToCollectionDialog({
             </div>
           ) : collections.length === 0 ? (
             <div className="text-center py-8 text-muted-foreground">
-              <p>You don't have any collections yet.</p>
+              <p>You don&apos;t have any collections yet.</p>
               <p className="text-sm mt-2">Create a collection first to add quotes.</p>
             </div>
           ) : (

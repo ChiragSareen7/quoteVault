@@ -19,13 +19,12 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { toast } from 'sonner';
 import Link from 'next/link';
-import { useRouter, useParams } from 'next/navigation';
+import { useParams } from 'next/navigation';
 import { useState } from 'react';
 
 export default function CollectionPage() {
   const params = useParams();
   const collectionId = params.id as string;
-  const router = useRouter();
   const queryClient = useQueryClient();
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [collectionName, setCollectionName] = useState('');
@@ -111,7 +110,7 @@ export default function CollectionPage() {
         <Nav />
         <main className="container mx-auto px-4 py-8">
           <div className="rounded-lg border border-destructive/50 bg-destructive/10 p-4 text-center text-destructive">
-            <p>Collection not found or you don't have access to it.</p>
+            <p>Collection not found or you don&apos;t have access to it.</p>
             <Link href={ROUTES.collections}>
               <Button variant="outline" className="mt-4">
                 Back to Collections

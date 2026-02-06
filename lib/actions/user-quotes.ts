@@ -1,9 +1,11 @@
+'use server';
 
 import { createServerSupabase } from '@/lib/supabase/server';
 import type { QuoteCategory } from '@/types/database';
+import type { SupabaseClient } from '@supabase/supabase-js';
 import { revalidatePath } from 'next/cache';
 
-async function getOrCreateMyQuotesCollection(supabase: any, userId: string) {
+async function getOrCreateMyQuotesCollection(supabase: SupabaseClient, userId: string) {
   // Check if "My Quotes" collection exists
   const { data: existing } = await supabase
     .from('collections')

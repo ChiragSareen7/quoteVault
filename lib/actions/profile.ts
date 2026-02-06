@@ -1,3 +1,4 @@
+'use server';
 
 import { createServerSupabase } from '@/lib/supabase/server';
 import type { Profile, ThemePreference, AccentColor, FontSize } from '@/types/database';

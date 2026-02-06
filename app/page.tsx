@@ -12,7 +12,7 @@ import { QuoteCard } from '@/components/quote-card';
 import { CreateQuoteDialog } from '@/components/create-quote-dialog';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Search, Loader2, Filter, Plus } from 'lucide-react';
 import { Nav } from '@/components/nav';
 import { useAuth } from '@/lib/hooks/use-auth';
@@ -21,7 +21,7 @@ export default function HomePage() {
   const { isAuthenticated } = useAuth();
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<QuoteCategory | 'all'>('all');
-  const [authorFilter, setAuthorFilter] = useState('');
+  const [authorFilter] = useState('');
   const [page, setPage] = useState(1);
   const [showCreateDialog, setShowCreateDialog] = useState(false);
 

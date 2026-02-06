@@ -21,20 +21,26 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Heart, BookOpen, Home, User, LogOut, Moon, Sun, Menu } from 'lucide-react';
+import { Heart, BookOpen, Home, User, LogOut, Moon, Sun } from 'lucide-react';
 import { useTheme } from 'next-themes';
-import { useEffect, useState } from 'react';
+import { useSyncExternalStore } from 'react';
 import { ROUTES } from '@/lib/constants';
+
+function subscribe() {
+  return () => {};
+}
+function getServerSnapshot() {
+  return false;
+}
+function getClientSnapshot() {
+  return true;
+}
 
 export function Nav() {
   const pathname = usePathname();
   const { user, isAuthenticated } = useAuth();
   const { theme, setTheme } = useTheme();
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
+  const mounted = useSyncExternalStore(subscribe, getClientSnapshot, getServerSnapshot);
 
   const handleSignOut = async () => {
     await signOut();

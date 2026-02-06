@@ -23,10 +23,8 @@ function ResetPasswordForm() {
     // Check if user has a valid reset token
     const checkResetToken = async () => {
       const supabase = getClientSupabase();
-      const {
-        data: { session },
-      } = await supabase.auth.getSession();
-      
+      await supabase.auth.getSession();
+
       // If there's a hash in the URL, user likely came from reset email
       if (window.location.hash || searchParams.get('type') === 'recovery') {
         setIsResetMode(false);
@@ -80,7 +78,7 @@ function ResetPasswordForm() {
           <CardHeader className="space-y-1">
             <CardTitle className="text-2xl font-bold">Check your email</CardTitle>
             <CardDescription>
-              We've sent you a password reset link
+              We&apos;ve sent you a password reset link
             </CardDescription>
           </CardHeader>
           <CardContent>
