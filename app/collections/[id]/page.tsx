@@ -1,4 +1,5 @@
 
+'use client';
 
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { getCollection, getCollectionQuotes, updateCollection, removeQuoteFromCollection } from '@/lib/actions/collections';
